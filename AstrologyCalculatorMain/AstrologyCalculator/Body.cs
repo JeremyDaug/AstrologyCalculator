@@ -15,6 +15,13 @@ namespace AstrologyCalculator
         private double semimajorAxis;
         #endregion
 
+        // Identify information
+
+        /// <summary>
+        /// The Body's name
+        /// </summary>
+        public string Name { get; set; }
+
         // Structural and Independent Data
 
         /// <summary>
@@ -54,7 +61,18 @@ namespace AstrologyCalculator
         /// <summary>
         /// Orbital Radius
         /// </summary>
-        public double SemimajorAxis { get => semimajorAxis; set => semimajorAxis = value; }
+        public double SemimajorAxis
+        {
+            get
+            {
+                return semimajorAxis;
+            }
+            set
+            {
+                semimajorAxis = value;
+                UpdatePeriapsisAndApoapsis();
+            }
+        }
 
         #region Radius Subcomponents
         /// <summary>
@@ -74,7 +92,16 @@ namespace AstrologyCalculator
         /// <summary>
         /// Furthest distance from the parent.
         /// </summary>
-        public double Apoapsis { get => apoapsis; set => apoapsis = value; }
+        public double Apoapsis
+        {
+            get { return apoapsis; }
+            set
+            {
+                apoapsis = value;
+                UpdateSemiMajorAxis();
+                UpdateEccentricity();
+            }
+        }
         #endregion
 
         /// <summary>
@@ -104,12 +131,31 @@ namespace AstrologyCalculator
 
         #endregion
 
-        #region Time Based Orbital Parameters
+        #region Simplified Orbital Parameters
 
         /// <summary>
         /// How long it takes to orbit.
         /// </summary>
         public double OrbitPeriod { get; set; }
+
+        #endregion
+
+        #region Public Functions
+
+        /// <summary>
+        /// Calculates the distance of the body from it's parent 
+        /// based off of the current angle in the orbit
+        /// </summary>
+        /// <param name="angle">Angle relative to the periapsis.</param>
+        /// <returns>The distance in Km from the parent.</returns>
+        public double DistanceFromParent(double angle)
+        {
+            if (Head) return 0;
+
+            var diff = Apoapsis - SemimajorAxis;
+
+            return SemimajorAxis - (Math.Cos(angle) * diff);
+        }
 
         #endregion
 
@@ -122,5 +168,13 @@ namespace AstrologyCalculator
         {
             eccentricity = 1 - 2 / ((Apoapsis / Periapsis) + 1);
         }
+
+        private void UpdatePeriapsisAndApoapsis()
+        {
+            periapsis = SemimajorAxis * (1 - Eccentricity);
+            apoapsis = SemimajorAxis * (1 + Eccentricity);
+        }
+
+        
     }
 }

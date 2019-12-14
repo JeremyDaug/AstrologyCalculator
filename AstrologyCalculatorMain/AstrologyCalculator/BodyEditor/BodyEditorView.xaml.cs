@@ -13,25 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace AstrologyCalculator
+namespace AstrologyCalculator.BodyEditor
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for BodyEditorView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class BodyEditorView : UserControl
     {
-        public MainWindow()
+        public BodyEditorView()
         {
             InitializeComponent();
-        }
-
-        private void BodyEditorViewControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            BodyEditor.BodyEditorViewModel viewModelObject = new BodyEditor.BodyEditorViewModel();
-
-            viewModelObject.LoadBodies();
-
-            BodyEditorViewControl.DataContext = viewModelObject;
         }
     }
 }
