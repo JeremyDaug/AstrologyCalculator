@@ -68,6 +68,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Body.cs" />
+    <Compile Include="BodyChooser\BodyChooserModel.cs" />
     <Compile Include="BodyEditor\BodyEditorModel.cs" />
     <Compile Include="BodyEditor\BodyEditorView.xaml.cs">
       <DependentUpon>BodyEditorView.xaml</DependentUpon>
