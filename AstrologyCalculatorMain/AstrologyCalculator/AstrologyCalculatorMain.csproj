@@ -55,9 +55,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\StringToDoubleConverter.cs" />
+    <Compile Include="Converters\StringToIntConverter.cs" />
+    <Compile Include="TimespanUnits\TimespansTab\TimespansTabModel.cs" />
+    <Compile Include="TimespanUnits\TimespansTab\TimespansTabView.xaml.cs">
+      <DependentUpon>TimespansTabView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TimespanUnits\TimespansTab\TimespansTabViewModel.cs" />
+    <Compile Include="TimespanUnits\TimespanUnitManager.cs" />
     <Page Include="BodyEditor\BodyEditorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Calendar\CalendarTab\CalendarTabView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -75,10 +87,20 @@
     </Compile>
     <Compile Include="BodyEditor\BodyEditorViewModel.cs" />
     <Compile Include="BodyType.cs" />
+    <Compile Include="Calendar\Calendar.cs" />
+    <Compile Include="Calendar\CalendarTab\CalendarTabModel.cs" />
+    <Compile Include="Calendar\CalendarTab\CalendarTabView.xaml.cs">
+      <DependentUpon>CalendarTabView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Calendar\CalendarTab\CalendarTabViewModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="TimespanUnits\TimespansTab\TimespansTabView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

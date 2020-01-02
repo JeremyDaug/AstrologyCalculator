@@ -7,17 +7,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <StackPanel HorizontalAlignment="Left">
-            <ItemsControl ItemsSource="{Binding Path=Bodies}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Path=Name, Mode=TwoWay}" 
-                                       Width="100" Margin="3 5 3 5"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </StackPanel>
+        <Label Content="BodyEditorTab"/>
     </Grid>
 </UserControl>

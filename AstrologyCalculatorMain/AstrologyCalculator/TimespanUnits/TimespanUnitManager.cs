@@ -4,7 +4,7 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 
-namespace CalendarLibrary
+namespace AstrologyCalculator.TimespanUnits
 {
     public class TimespanUnitManager : IXmlSerializable
     {
@@ -31,9 +31,9 @@ namespace CalendarLibrary
 
         public string BaseUnit => second;
 
-        public IDictionary<string, double> UnitLength { get; }
+        private IDictionary<string, double> UnitLength { get; }
 
-        public IDictionary<string, int> UnitRank { get; }
+        private IDictionary<string, int> UnitRank { get; }
 
         public TimespanUnitManager()
         {
@@ -64,6 +64,35 @@ namespace CalendarLibrary
             UnitRank.Clear();
 
             SetDefaultValues();
+        }
+
+        public IReadOnlyCollection<string> AvailableUnits()
+        {
+            return (IReadOnlyCollection<string>)UnitLength.Keys;
+        }
+
+        public double GetLength(string unit)
+        {
+            return UnitLength[unit];
+        }
+
+        public void SetLength(string unit, double length)
+        {
+            if (!UnitLength.Keys.Contains(unit))
+                throw new KeyNotFoundException();
+            UnitLength[unit] = length;
+        }
+
+        public int GetRank(string unit)
+        {
+            return UnitRank[unit];
+        }
+
+        public void SetRank(string unit, int rank)
+        {
+            if (!UnitRank.Keys.Contains(unit))
+                throw new KeyNotFoundException();
+            UnitRank[unit] = rank;
         }
         
         public void SetDefaultValues()

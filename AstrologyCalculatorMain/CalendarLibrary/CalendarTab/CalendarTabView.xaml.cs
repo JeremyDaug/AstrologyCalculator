@@ -13,23 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace AstrologyCalculator
+namespace CalendarLibrary.CalendarTab
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for CalendarTabView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class CalendarTabView : UserControl
     {
-        public MainWindow()
+        public CalendarTabView()
         {
             InitializeComponent();
-        }
-
-        private void BodyEditorViewControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            BodyEditor.BodyEditorViewModel viewModelObject = new BodyEditor.BodyEditorViewModel();
-
-            viewModelObject.LoadBodies();
         }
     }
 }

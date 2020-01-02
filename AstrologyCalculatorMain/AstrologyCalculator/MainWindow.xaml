@@ -4,10 +4,22 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AstrologyCalculator"
+        xmlns:calendarTab="clr-namespace:AstrologyCalculator.Calendar.CalendarTab"
+        xmlns:TimeSpans="clr-namespace:AstrologyCalculator.TimespanUnits.TimespansTab"
         xmlns:bodyeditor="clr-namespace:AstrologyCalculator.BodyEditor"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <bodyeditor:BodyEditorView x:Name="BodyEditorViewControl" Loaded="BodyEditorViewControl_Loaded"/>
+        <TabControl>
+            <TabItem Header="Name">
+                <bodyeditor:BodyEditorView/>
+            </TabItem>
+            <TabItem Header="Calendar">
+                <calendarTab:CalendarTabView/>
+            </TabItem>
+            <TabItem Header="Time Units">
+                <TimeSpans:TimespansTabView/>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>
