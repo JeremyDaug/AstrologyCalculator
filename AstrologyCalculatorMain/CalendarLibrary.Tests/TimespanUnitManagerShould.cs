@@ -31,11 +31,10 @@ namespace AstrologyCalculator.TimespanUnits.Tests
         {
             sut.LoadFrom(testFileName);
 
-            Assert.That(sut.UnitLength.Keys.Contains(testUnitName), Is.True);
-            Assert.That(sut.UnitRank.Keys.Contains(testUnitName), Is.True);
+            Assert.That(sut.AvailableUnits().Contains(testUnitName), Is.True);
 
-            Assert.That(sut.UnitLength[testUnitName], Is.EqualTo(testUnitlength));
-            Assert.That(sut.UnitRank[testUnitName], Is.EqualTo(testUnitRank));
+            Assert.That(sut.GetLength(testUnitName), Is.EqualTo(testUnitlength));
+            Assert.That(sut.GetRank(testUnitName), Is.EqualTo(testUnitRank));
         }
     }
 }

@@ -22,6 +22,10 @@ namespace AstrologyCalculator.TimespanUnits.TimespansTab
     {
         public TimespansTabView()
         {
+            var manager = new TimespanUnitManager();
+            var model = new TimespansTabModel(manager);
+            this.DataContext = new TimespansTabViewModel(model);
+
             InitializeComponent();
         }
 

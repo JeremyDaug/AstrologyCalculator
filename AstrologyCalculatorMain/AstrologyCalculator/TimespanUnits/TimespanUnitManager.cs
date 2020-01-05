@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml;
+using System.Linq;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 
@@ -66,9 +67,9 @@ namespace AstrologyCalculator.TimespanUnits
             SetDefaultValues();
         }
 
-        public IReadOnlyCollection<string> AvailableUnits()
+        public List<string> AvailableUnits()
         {
-            return (IReadOnlyCollection<string>)UnitLength.Keys;
+            return UnitLength.Keys.ToList();
         }
 
         public double GetLength(string unit)
@@ -94,7 +95,12 @@ namespace AstrologyCalculator.TimespanUnits
                 throw new KeyNotFoundException();
             UnitRank[unit] = rank;
         }
-        
+
+        public bool ContainsUnit(string name)
+        {
+            return UnitLength.Keys.Contains(name);
+        }
+
         public void SetDefaultValues()
         { 
             AddOrOverride(second, 1, 0);

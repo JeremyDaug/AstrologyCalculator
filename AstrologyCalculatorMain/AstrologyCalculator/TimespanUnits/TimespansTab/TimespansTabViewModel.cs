@@ -10,58 +10,61 @@ using System.Windows.Input;
 
 namespace AstrologyCalculator.TimespanUnits.TimespansTab
 {
-    class TimespansTabViewModel : INotifyPropertyChanged
+    public class TimespansTabViewModel : INotifyPropertyChanged
     {
-        public TimespanUnitManager timespanUnitManager;
+        private TimespansTabModel model;
 
-        public ObservableCollection<string> UnitNames { get; set; }
+        public IList<string> UnitNames
+        {
+            get
+            {
+                return model.CurrentAvailableUnits;
+            }
+        }
 
-        private string currentUnitName;
         public string CurrentUnitName
         {
             get
             {
-                return currentUnitName;
+                return model.CurrentUnitName;
             }
             set
             {
-                if(currentUnitName != value)
+                if(model.CurrentUnitName != value)
                 {
-                    currentUnitName = value;
+                    model.CurrentUnitName = value;
                     OnPropertyChanged(nameof(CurrentUnitName));
                 }
             }
         }
 
-        private double currentUnitLength;
         public double CurrentUnitLength
         {
             get
             {
-                return currentUnitLength;
+                return model.CurrentUnitLength;
             }
             set
             {
-                if(currentUnitLength != value)
+                if(model.CurrentUnitLength != value)
                 {
-                    currentUnitLength = value;
+                    model.CurrentUnitLength = value;
                     OnPropertyChanged(nameof(CurrentUnitLength));
                 }
             }
         }
 
-        private int currentUnitRank;
         public int CurrentUnitRank
         {
             get
             {
-                return currentUnitRank;
+                return model.CurrentUnitRank;
             }
             set
             {
-                if(currentUnitRank != value)
+                if(model.CurrentUnitRank != value)
                 {
-                    currentUnitRank = value;
+                    model.CurrentUnitRank = value;
                     OnPropertyChanged(nameof(CurrentUnitRank));
                 }
             }
@@ -73,41 +76,14 @@ namespace AstrologyCalculator.TimespanUnits.TimespansTab
         {
             var name = (string)args.AddedItems[0];
 
-            CurrentUnitName = name;
-            CurrentUnitLength = timespanUnitManager.GetLength(name);
-            CurrentUnitRank = timespanUnitManager.GetRank(name);
+            model.ChangeCurrentUnit(name);
         }
-
-        public void UnitNameChanged(object sender, TextChangedEventArgs args)
-        {
-
-        }
-
-        public void UnitLengthChanged(object sender, TextChangedEventArgs args)
-        {
-
-        }
-
-        public void UnitRankChanged(object sender, TextChangedEventArgs args)
-        {
-
-        }
-
-
 
         #endregion Reactions
 
-        public TimespansTabViewModel()
+        public TimespansTabViewModel(TimespansTabModel model)
         {
-            UnitNames = new ObservableCollection<string>();
-
-            timespanUnitManager = new TimespanUnitManager();
-            timespanUnitManager.SetDefaultValues();
-
-            foreach(var unit in timespanUnitManager.AvailableUnits())
-            {
-                UnitNames.Add(unit);
-            }
+            this.model = model;
         }
 
         private void OnPropertyChanged(string propertyName)
