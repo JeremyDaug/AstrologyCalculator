@@ -60,5 +60,10 @@ namespace AstrologyCalculator.TimespanUnits.TimespansTab
             TimespansUnitManager.Clear();
             TimespansUnitManager.LoadFrom(file);
         }
+
+        internal void LoadDefaults()
+        {
+            TimespansUnitManager.LoadDefault();
+        }
     }
 }

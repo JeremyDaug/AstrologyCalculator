@@ -150,6 +150,8 @@ namespace AstrologyCalculator.TimespanUnits.TimespansTab
 
         public ICommand LoadFromFileCommand { get; set; }
 
+        public ICommand LoadDefaultUnitsCommand { get; set; }
+
         #endregion Commands
 
         #region Reactions
@@ -259,8 +261,16 @@ namespace AstrologyCalculator.TimespanUnits.TimespansTab
             {
                 var file = dialog.FileName;
                 model.LoadFromFile(file);
+                SelectedAlternativeUnitName = model.AlternativeAvailableUnits[0];
+                SelectedUnitName = model.CurrentAvailableUnits[0];
                 UpdateUnitLists();
             }
+        }
+
+        private void LoadDefaults()
+        {
+            model.LoadDefaults();
+            UpdateUnitLists();
         }
 
         public TimespansTabViewModel(TimespansTabModel model)
@@ -272,6 +282,7 @@ namespace AstrologyCalculator.TimespanUnits.TimespansTab
             DeleteUnitCommand = new RelayCommand(() => DeleteUnit(), () => CanDelete());
             SaveToFileCommand = new RelayCommand(() => SaveToFile(), () => true);
             LoadFromFileCommand = new RelayCommand(() => LoadFromFile(), () => true);
+            LoadDefaultUnitsCommand = new RelayCommand(() => LoadDefaults(), () => true);
         }
 
         private void OnPropertyChanged(string propertyName)
@@ -306,7 +317,8 @@ namespace AstrologyCalculator.TimespanUnits.TimespansTab
 
                     AlternativeUnitNames = new ObservableCollection<string>(model.AlternativeAvailableUnits);
 
-                    SelectedAlternativeUnitName = model.AlternativeAvailableUnits[0];
+                    if(model.AlternativeAvailableUnits.Count() > 0)
+                        SelectedAlternativeUnitName = model.AlternativeAvailableUnits[0];
                 }
 
                 CurrentUnitLength = model.TimespansUnitManager.GetLength(SelectedUnitName);
