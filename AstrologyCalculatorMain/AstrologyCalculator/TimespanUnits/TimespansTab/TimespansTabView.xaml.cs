@@ -30,12 +30,6 @@ namespace AstrologyCalculator.TimespanUnits.TimespansTab
             InitializeComponent();
         }
 
-        private void UnitSelection_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var viewmodel = (TimespansTabViewModel)DataContext;
-            viewmodel.SelectedUnitChanged(sender, e);
-        }
-
         private void AlternativeUnits_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var viewmodel = (TimespansTabViewModel)DataContext;

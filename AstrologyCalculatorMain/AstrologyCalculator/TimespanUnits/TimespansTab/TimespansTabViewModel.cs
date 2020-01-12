@@ -152,11 +152,6 @@ namespace AstrologyCalculator.TimespanUnits.TimespansTab
 
         #region Reactions
 
-        public void SelectedUnitChanged(object sender, SelectionChangedEventArgs args)
-        {
-
-        }
-
         public void AlternativeUnitChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems.Count == 0)
