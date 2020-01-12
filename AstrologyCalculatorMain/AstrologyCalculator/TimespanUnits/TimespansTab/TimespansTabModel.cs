@@ -20,10 +20,26 @@ namespace AstrologyCalculator.TimespanUnits.TimespansTab
 
         public int CurrentUnitRank { get; set; }
 
-        public IList<string> CurrentAvailableUnits => TimespansUnitManager.AvailableUnits();
+        public IList<string> CurrentAvailableUnits
+        {
+            get
+            {
+                var result =  TimespansUnitManager.AvailableUnits();
+                result.Sort();
+                return result;
+            }
+        }
 
-        public IList<string> AlternativeAvailableUnits =>
-                CurrentAvailableUnits.Where(x => x != CurrentUnitName).ToList();
+        public IList<string> AlternativeAvailableUnits
+        {
+            get
+            {
+                var result = CurrentAvailableUnits.Where(x => x != CurrentUnitName).ToList();
+                result.Sort();
+                return result;
+            }
+        }
+                
 
         public double AlternativeUnitLength { get; internal set; }
 
