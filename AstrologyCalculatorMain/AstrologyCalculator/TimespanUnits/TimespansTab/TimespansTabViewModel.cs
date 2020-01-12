@@ -179,16 +179,26 @@ namespace AstrologyCalculator.TimespanUnits.TimespansTab
 
         public void NewTimespanUnit()
         {
-            CurrentUnitName = "";
+            CurrentUnitName = "New Unit";
             CurrentUnitLength = 1;
             CurrentUnitRank = 1;
+            model.SaveNewUnit();
+            UpdateUnitLists();
+            SelectedUnitName = CurrentUnitName;
         }
 
         public void SaveNewTimespan()
         {
+            if(model.CurrentAvailableUnits.Count() == 0)
+            {
+                model.SaveNewUnit();
+                UpdateUnitLists();
+                SelectedUnitName = CurrentUnitName;
+                return;
+            }
             model.SaveNewUnit();
 
-            if (CurrentUnitName != SelectedUnitName)
+            if (!string.Equals(CurrentUnitName, SelectedUnitName) && model.CurrentAvailableUnits.Contains(CurrentUnitName))
             {
                 model.DeleteUnit(selectedUnit);
                 SelectedUnitName = CurrentUnitName;
@@ -203,7 +213,8 @@ namespace AstrologyCalculator.TimespanUnits.TimespansTab
         public void DeleteUnit()
         {
             model.DeleteUnit(CurrentUnitName);
-            SelectedUnitName = model.CurrentAvailableUnits[0];
+            if(model.CurrentAvailableUnits.Count() > 0)
+                SelectedUnitName = model.CurrentAvailableUnits[0];
             UpdateUnitLists();
         }
 
@@ -320,9 +331,6 @@ namespace AstrologyCalculator.TimespanUnits.TimespansTab
                     if(model.AlternativeAvailableUnits.Count() > 0)
                         SelectedAlternativeUnitName = model.AlternativeAvailableUnits[0];
                 }
-
-                CurrentUnitLength = model.TimespansUnitManager.GetLength(SelectedUnitName);
-                CurrentUnitRank = model.TimespansUnitManager.GetRank(SelectedUnitName);
             }
             else if (string.Equals(propertyName, nameof(SelectedAlternativeUnitName)))
             {
