@@ -42,9 +42,20 @@ namespace AstrologyCalculator.TimespanUnits
             UnitRank = new Dictionary<string, int>();
         }
 
-        public double Convert(string origin, string target, double value)
+        public double Convert(double value, string origin, string target)
         {
             return value / UnitLength[origin] * UnitLength[target];
+        }
+
+        public void DeletUnit(string currentUnitName)
+        {
+            UnitLength.Remove(currentUnitName);
+            UnitRank.Remove(currentUnitName);
+        }
+
+        public double InUnitsOf(string unit, double value)
+        {
+            return value / UnitLength[unit];
         }
 
         /// <summary>
@@ -61,10 +72,13 @@ namespace AstrologyCalculator.TimespanUnits
 
         public void LoadDefault()
         {
+            SetDefaultValues();
+        }
+
+        public void Clear()
+        {
             UnitLength.Clear();
             UnitRank.Clear();
-
-            SetDefaultValues();
         }
 
         public List<string> AvailableUnits()
@@ -116,7 +130,10 @@ namespace AstrologyCalculator.TimespanUnits
 
         public void LoadFrom(string filename)
         {
-            var reader = new XmlTextReader(filename);
+            var readerSettings = new XmlReaderSettings();
+            readerSettings.IgnoreWhitespace = true;
+
+            var reader = XmlTextReader.Create(filename, readerSettings);
             var serializer = new XmlSerializer(typeof(TimespanUnitManager));
             TimespanUnitManager result = (TimespanUnitManager)serializer.Deserialize(reader, null);
             var keys = result.UnitLength.Keys;
@@ -126,7 +143,7 @@ namespace AstrologyCalculator.TimespanUnits
                 AddOrOverride(key, result.UnitLength[key], result.UnitRank[key]);
             }
 
-            SetDefaultValues();
+            //SetDefaultValues();
         }
 
         public void SaveTo(string fileName)

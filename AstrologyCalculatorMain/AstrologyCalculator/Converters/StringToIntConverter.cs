@@ -12,22 +12,22 @@ namespace AstrologyCalculator.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if(value.GetType() != typeof(string))
-            {
-                return null;
-            }
-
-            return int.Parse((string)value);
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
             if (value.GetType() != typeof(int))
             {
                 return null;
             }
 
             return value.ToString();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value.GetType() != typeof(string))
+            {
+                return null;
+            }
+
+            return int.Parse((string)value);
         }
     }
 }

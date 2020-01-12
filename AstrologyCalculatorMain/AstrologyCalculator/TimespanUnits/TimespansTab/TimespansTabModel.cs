@@ -10,12 +10,12 @@ namespace AstrologyCalculator.TimespanUnits.TimespansTab
     {
         public TimespansTabModel(TimespanUnitManager manager)
         {
-            this.timespanUnitManager = manager;
+            this.TimespansUnitManager = manager;
             if (CurrentAvailableUnits.Count() == 0)
-                timespanUnitManager.LoadDefault();
+                TimespansUnitManager.LoadDefault();
         }
 
-        private TimespanUnitManager timespanUnitManager;
+        public TimespanUnitManager TimespansUnitManager;
 
         public string CurrentUnitName { get; set; }
 
@@ -23,25 +23,42 @@ namespace AstrologyCalculator.TimespanUnits.TimespansTab
 
         public int CurrentUnitRank { get; set; }
 
-        public IList<string> CurrentAvailableUnits => timespanUnitManager.AvailableUnits();
+        public IList<string> CurrentAvailableUnits => TimespansUnitManager.AvailableUnits();
+
+        public IList<string> AlternativeAvailableUnits =>
+                CurrentAvailableUnits.Where(x => x != CurrentUnitName).ToList();
+
+        public double AlternativeUnitLength { get; internal set; }
 
         internal void ChangeCurrentUnit(string name)
         {
-            if (!timespanUnitManager.ContainsUnit(name))
+            if (!TimespansUnitManager.ContainsUnit(name))
                 throw new KeyNotFoundException();
             CurrentUnitName = name;
 
-            CurrentUnitLength = timespanUnitManager.GetLength(name);
-            CurrentUnitRank = timespanUnitManager.GetRank(name);
+            CurrentUnitLength = TimespansUnitManager.GetLength(name);
+            CurrentUnitRank = TimespansUnitManager.GetRank(name);
         }
 
-        public void CreateNewUnit(string unit)
+        public void SaveNewUnit()
         {
-            timespanUnitManager.AddOrOverride(unit, 1, 1);
+            TimespansUnitManager.AddOrOverride(CurrentUnitName, CurrentUnitLength, CurrentUnitRank);
+        }
 
-            CurrentUnitName = unit;
-            CurrentUnitLength = 1;
-            CurrentUnitRank = 1;
+        public void DeleteUnit(string currentUnitName)
+        {
+            TimespansUnitManager.DeletUnit(currentUnitName);
+        }
+
+        public void SaveToFile(string file)
+        {
+            TimespansUnitManager.SaveTo(file);
+        }
+
+        internal void LoadFromFile(string file)
+        {
+            TimespansUnitManager.Clear();
+            TimespansUnitManager.LoadFrom(file);
         }
     }
 }

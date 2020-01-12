@@ -23,6 +23,7 @@ namespace AstrologyCalculator.TimespanUnits.TimespansTab
         public TimespansTabView()
         {
             var manager = new TimespanUnitManager();
+            manager.LoadDefault();
             var model = new TimespansTabModel(manager);
             this.DataContext = new TimespansTabViewModel(model);
 
@@ -35,22 +36,10 @@ namespace AstrologyCalculator.TimespanUnits.TimespansTab
             viewmodel.SelectedUnitChanged(sender, e);
         }
 
-        private void UnitName_TextChanged(object sender, TextChangedEventArgs e)
+        private void AlternativeUnits_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var viewmodel = (TimespansTabViewModel)DataContext;
-            viewmodel.UnitNameChanged(sender, e);
-        }
-
-        private void Length_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            var viewmodel = (TimespansTabViewModel)DataContext;
-            viewmodel.UnitLengthChanged(sender, e);
-        }
-
-        private void Rank_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            var viewmodel = (TimespansTabViewModel)DataContext;
-            viewmodel.UnitRankChanged(sender, e);
+            viewmodel.AlternativeUnitChanged(sender, e);
         }
     }
 }
