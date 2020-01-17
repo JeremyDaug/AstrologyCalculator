@@ -57,6 +57,7 @@
     </ApplicationDefinition>
     <Compile Include="Converters\StringToDoubleConverter.cs" />
     <Compile Include="Converters\StringToIntConverter.cs" />
+    <Compile Include="MainDataframe\MainDataframe.cs" />
     <Compile Include="TimespanUnits\RelayCommand.cs" />
     <Compile Include="TimespanUnits\TimespansTab\TimespansTabModel.cs" />
     <Compile Include="TimespanUnits\TimespansTab\TimespansTabView.xaml.cs">
@@ -80,8 +81,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Body.cs" />
-    <Compile Include="BodyChooser\BodyChooserModel.cs" />
+    <Compile Include="BodyEditor\Body.cs" />
     <Compile Include="BodyEditor\BodyEditorModel.cs" />
     <Compile Include="BodyEditor\BodyEditorView.xaml.cs">
       <DependentUpon>BodyEditorView.xaml</DependentUpon>

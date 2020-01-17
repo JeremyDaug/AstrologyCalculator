@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AstrologyCalculator.BodyEditor
 {
-    class BodyEditorModel : INotifyPropertyChanged
+    public class BodyEditorModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 

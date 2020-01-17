@@ -22,7 +22,22 @@ namespace AstrologyCalculator.BodyEditor
     {
         public BodyEditorView()
         {
+            var model = new BodyEditorModel();
+            DataContext = new BodyEditorViewModel(model);
+
             InitializeComponent();
+        }
+
+        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            var viewmodel = (BodyEditorViewModel)DataContext;
+            viewmodel.AllFeatureMode(false);
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            var viewmodel = (BodyEditorViewModel)DataContext;
+            viewmodel.AllFeatureMode(true);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AstrologyCalculator.BodyEditor;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -9,9 +10,11 @@ namespace AstrologyCalculator.BodyEditor
 {
     public class BodyEditorViewModel
     {
-        public BodyEditorViewModel()
+        private readonly BodyEditorModel model;
+
+        public BodyEditorViewModel(BodyEditorModel model)
         {
-            
+            this.model = model;
         }
 
         public ObservableCollection<Body> Bodies { get; set; }
@@ -25,6 +28,18 @@ namespace AstrologyCalculator.BodyEditor
             bodies.Add(new Body { Name = "Charlie" });
 
             Bodies = bodies;
+        }
+
+        public void AllFeatureMode(bool IsEnabled)
+        {
+            if (IsEnabled)
+            {
+
+            }
+            else
+            {
+
+            }
         }
     }
 }

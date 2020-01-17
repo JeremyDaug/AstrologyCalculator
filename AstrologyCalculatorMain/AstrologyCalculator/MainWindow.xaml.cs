@@ -27,7 +27,8 @@ namespace AstrologyCalculator
 
         private void BodyEditorViewControl_Loaded(object sender, RoutedEventArgs e)
         {
-            BodyEditor.BodyEditorViewModel viewModelObject = new BodyEditor.BodyEditorViewModel();
+            BodyEditor.BodyEditorModel model = new BodyEditor.BodyEditorModel();
+            BodyEditor.BodyEditorViewModel viewModelObject = new BodyEditor.BodyEditorViewModel(model);
 
             viewModelObject.LoadBodies();
         }

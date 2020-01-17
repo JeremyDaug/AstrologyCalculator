@@ -11,7 +11,7 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <TabControl>
-            <TabItem Header="Name">
+            <TabItem Header="Body Editor">
                 <bodyeditor:BodyEditorView/>
             </TabItem>
             <TabItem Header="Calendar">

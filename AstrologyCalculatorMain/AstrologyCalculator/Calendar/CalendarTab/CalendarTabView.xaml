@@ -10,7 +10,7 @@
     <UserControl.DataContext>
         <local:CalendarTabViewModel/>
     </UserControl.DataContext>
-    <Grid>
+    <Grid Background="Gray" Margin="10,10,10,10">
         <StackPanel Orientation="Vertical">
             <Label Content="Calendar Tab"/>
             <TextBox Text="{Binding Path=CalendarName, Mode=TwoWay}" Width="300" HorizontalAlignment="Left" Background="WhiteSmoke"/>
