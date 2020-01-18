@@ -7,31 +7,19 @@ using System.Threading.Tasks;
 
 namespace AstrologyCalculator.BodyEditor
 {
-    public class BodyEditorModel : INotifyPropertyChanged
+    public class BodyEditorModel
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public BodyEditorModel()
+        {
+            currentBody = new Body();
+        }
 
         private Body currentBody;
 
-        public string Name
+        public string BodyName
         {
             get { return currentBody.Name; }
-            set
-            {
-                if (value == currentBody.Name)
-                    return;
-                currentBody.Name = value;
-                RaisePropertyChanged(nameof(Name));
-            }
-        }
-
-        // https://www.tutorialspoint.com/mvvm/mvvm_first_application.htm
-
-        // Events
-
-        private void RaisePropertyChanged(string property)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+            set { currentBody.Name = value; }
         }
     }
 }

@@ -31,6 +31,7 @@ namespace AstrologyCalculator.BodyEditor
         private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
             var viewmodel = (BodyEditorViewModel)DataContext;
+            
             viewmodel.AllFeatureMode(false);
         }
 

@@ -2,13 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace AstrologyCalculator.BodyEditor
 {
-    public class BodyEditorViewModel
+    public class BodyEditorViewModel : INotifyPropertyChanged
     {
         private readonly BodyEditorModel model;
 
@@ -17,28 +18,38 @@ namespace AstrologyCalculator.BodyEditor
             this.model = model;
         }
 
-        public ObservableCollection<Body> Bodies { get; set; }
-
-        public void LoadBodies()
+        public string BodyName
         {
-            var bodies = new ObservableCollection<Body>();
-
-            bodies.Add(new Body { Name = "Alice" });
-            bodies.Add(new Body { Name = "Bob" });
-            bodies.Add(new Body { Name = "Charlie" });
-
-            Bodies = bodies;
+            get
+            {
+                return model.BodyName;
+            }
+            set
+            {
+                if (string.Equals(model.BodyName, value))
+                {
+                    model.BodyName = value;
+                    OnPropertyChanged(nameof(BodyName));
+                }
+            }
         }
+
+        private void OnPropertyChanged(string v)
+        {
+            
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public void AllFeatureMode(bool IsEnabled)
         {
             if (IsEnabled)
             {
-
+                // Turn on the advanced boxes
             }
             else
             {
-
+                // turn advanced boxes off (only use orbit period / radius)
             }
         }
     }

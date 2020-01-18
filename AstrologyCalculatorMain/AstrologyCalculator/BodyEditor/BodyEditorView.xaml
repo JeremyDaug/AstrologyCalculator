@@ -4,8 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:AstrologyCalculator.BodyEditor"
+             xmlns:converters="clr-namespace:AstrologyCalculator.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:StringToIntConverter x:Key="StringToIntConverter"/>
+        <converters:StringToDoubleConverter x:Key="StringToDoubleConverter"/>
+    </UserControl.Resources>
     <Grid Background="Gray" Margin="10,10,10,10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -26,10 +31,45 @@
         <Label Content="Current Body" Grid.Column="0" Grid.Row="0" 
                HorizontalAlignment="Center" VerticalAlignment="Center"/>
         <TextBox IsReadOnly="True" Grid.Column="1" Grid.Row="0"
-                 Width="100" Height="30"
+                 Width="100" Height="30" Text="{Binding BodyName}"
                  HorizontalAlignment="Center" VerticalAlignment="Center"/>
         <CheckBox Content="Full Feature Mode" Grid.Column="2" Grid.Row="0" IsChecked="True"
-                  Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked"
+                  Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked" Name="FullFeatureCheckbox"
                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+        <Label Content="Semimajor Axis" Grid.Column="0" Grid.Row="1"
+               VerticalAlignment="Top" HorizontalAlignment="Left"/>
+        <TextBox Text="{Binding SemiMajorAxis, Converter={StaticResource StringToDoubleConverter}}" Grid.Column="0" Grid.Row="1"
+                 Width="100" Height="25" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+
+        <Label Content="Orbital Period" Grid.Column="1" Grid.Row="1"
+               VerticalAlignment="Top" HorizontalAlignment="Left"/>
+        <TextBox Text="{Binding OrbitalPeriod, Converter={StaticResource StringToDoubleConverter}}" Grid.Column="1" Grid.Row="1"
+                 Width="100" Height="25" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+
+        <Label Content="True Anomaly" Grid.Column="0" Grid.Row="2"
+               VerticalAlignment="Top" HorizontalAlignment="Left"/>
+        <TextBox Text="{Binding TrueAnomaly, Converter={StaticResource StringToDoubleConverter}}" Grid.Column="0" Grid.Row="2"
+                 Width="100" Height="25" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+
+        <Label Content="Inclination" Grid.Column="0" Grid.Row="3"
+               VerticalAlignment="Top" HorizontalAlignment="Left"/>
+        <TextBox Text="{Binding Inclination, Converter={StaticResource StringToDoubleConverter}}" Grid.Column="0" Grid.Row="3" IsEnabled="{Binding ElementName=FullFeatureCheckbox, Path=IsChecked}"
+                 Width="100" Height="25" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+
+        <Label Content="Ascending Node" Grid.Column="0" Grid.Row="4"
+               VerticalAlignment="Top" HorizontalAlignment="Left"/>
+        <TextBox Text="{Binding AscendingNode, Converter={StaticResource StringToDoubleConverter}}" Grid.Column="0" Grid.Row="4" IsEnabled="{Binding ElementName=FullFeatureCheckbox, Path=IsChecked}"
+                 Width="100" Height="25" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+
+        <Label Content="Argument Of Periapsis" Grid.Column="0" Grid.Row="5"
+               VerticalAlignment="Top" HorizontalAlignment="Left"/>
+        <TextBox Text="{Binding ArgumentOfPeriapsis, Converter={StaticResource StringToDoubleConverter}}" Grid.Column="0" Grid.Row="5" IsEnabled="{Binding ElementName=FullFeatureCheckbox, Path=IsChecked}"
+                 Width="100" Height="25" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+
+        <Label Content="Eccentricity" Grid.Column="0" Grid.Row="6"
+               VerticalAlignment="Top" HorizontalAlignment="Left"/>
+        <TextBox Text="{Binding Eccentricity, Converter={StaticResource StringToDoubleConverter}}" Grid.Column="0" Grid.Row="6" IsEnabled="{Binding ElementName=FullFeatureCheckbox, Path=IsChecked}"
+                 Width="100" Height="25" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
     </Grid>
 </UserControl>

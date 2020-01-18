@@ -24,13 +24,5 @@ namespace AstrologyCalculator
         {
             InitializeComponent();
         }
-
-        private void BodyEditorViewControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            BodyEditor.BodyEditorModel model = new BodyEditor.BodyEditorModel();
-            BodyEditor.BodyEditorViewModel viewModelObject = new BodyEditor.BodyEditorViewModel(model);
-
-            viewModelObject.LoadBodies();
-        }
     }
 }
