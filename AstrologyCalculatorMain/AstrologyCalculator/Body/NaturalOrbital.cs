@@ -22,7 +22,7 @@ namespace AstrologyCalculator.Body
         /// <summary>
         /// The mass of the body that is orbiting in kg.
         /// </summary>
-        public double BodyMass { get; set; }
+        public virtual double BodyMass { get; set; }
 
         /// <summary>
         /// The Gravity Constant in units of m^3 / (kg s^2)
@@ -62,20 +62,6 @@ namespace AstrologyCalculator.Body
         }
 
         /// <summary>
-        /// The Current Motion Vector of the Body relative to the parent.
-        /// </summary>
-        /// <remarks>
-        /// The Velocity is equivalent to the <see cref="Vector3D.Length"/> of the vector.
-        /// </remarks>
-        public Vector3D CurrentMotionVector
-        {
-            get
-            {
-                return new Vector3D();
-            }
-        }
-
-        /// <summary>
         /// Where the Barycenter (center of mass) of the system is.
         /// Measured in distance from the center of the parent body in meters.
         /// If the Barycenter is further from the center than the body's radius, 
@@ -86,6 +72,26 @@ namespace AstrologyCalculator.Body
             get
             {
                 return SemiMajorAxis / (1 + (ParentMass / BodyMass));
+            }
+        }
+
+        public Vector3D CurrentVelocityVector
+        {
+            get
+            {
+                var m = CurrentAngle;
+                var r = CurrentRadius;
+                var w = ArgumentOfPeriapsis;
+                var om = AscendingNode;
+                var i = Inclination;
+
+                var p = Math.Sqrt(GParam * SemiMajorAxis) / CurrentRadius *
+                    new Vector3D(-Math.Sin(EccentricAnomaly),
+                                 Math.Sqrt(1-Eccentricity*Eccentricity) * Math.Cos(EccentricAnomaly), 
+                                 0);
+
+                var result = Rotate_Z(-om) * Rotate_x(-Inclination) * Rotate_Z(-w);
+                return Vector3D.Multiply(p, result);
             }
         }
 

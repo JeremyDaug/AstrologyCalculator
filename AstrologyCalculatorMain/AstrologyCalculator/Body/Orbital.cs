@@ -16,6 +16,46 @@ namespace AstrologyCalculator.Body
     {
         #region HelperFunctions
 
+
+        /// <summary>
+        /// Rotate about x axis
+        /// </summary>
+        /// <param name="angle">The Angle of rotation</param>
+        /// <returns>The Rotation Matrix</returns>
+        protected Matrix3D Rotate_x(double angle)
+        {
+            return new Matrix3D(1, 0,               0,                0,
+                                0, Math.Cos(angle), -Math.Sin(angle), 0,
+                                0, Math.Sin(angle), Math.Cos(angle),  0, 
+                                0, 0,               0,                1);
+        }
+
+        /// <summary>
+        /// Rotate about y axis
+        /// </summary>
+        /// <param name="angle">The Angle of rotation</param>
+        /// <returns>The Rotation Matrix</returns>
+        protected Matrix3D Rotate_y(double angle)
+        {
+            return new Matrix3D(Math.Cos(angle),  0, Math.Sin(angle), 0,
+                                0,                1, 0,               0,
+                                -Math.Sin(angle), 1, Math.Cos(angle), 0,
+                                0,                0, 0,               1);
+        }
+
+        /// <summary>
+        /// Rotate about z axis
+        /// </summary>
+        /// <param name="angle">The Angle of rotation</param>
+        /// <returns>The Rotation Matrix</returns>
+        protected Matrix3D Rotate_Z(double angle)
+        {
+            return new Matrix3D(Math.Cos(angle), -Math.Sin(angle), 0, 0,
+                                Math.Sin(angle), Math.Cos(angle), 0, 0,
+                                0,               0,               1, 0,
+                                0,               0,               0, 1);
+        }
+
         /// <summary>
         /// The average angular movement given a set period of time.
         /// </summary>
@@ -24,6 +64,17 @@ namespace AstrologyCalculator.Body
         public double MeanMotionMovement(double time)
         {
             return MeanMotion * time;
+        }
+
+
+        /// <summary>
+        /// The Mean Anomaly (the fraction of an orbit's period that has elapsed since Periapsis), in Radians.
+        /// </summary>
+        /// <param name="seconds"> The time since the </param>
+        /// <returns>The angular distance from Periapsis.</returns>
+        public double MeanAnomaly(double seconds)
+        {
+            return MeanMotion * seconds;
         }
 
         /// <summary>
@@ -42,28 +93,15 @@ namespace AstrologyCalculator.Body
         #region DerivedProperties
 
         /// <summary>
-        /// The current position of the body relative to the parent.
+        /// The Angle from the center of the Ellipse to the current point.
         /// </summary>
-        public Point3D CurrentPoint
+        public double EccentricAnomaly
         {
             get
             {
-                // Using Point3D for this x is r, y is theta, z is phi
-                // physics standard (radius, polar angle, azimuthal angle)
-                var spherePoint = new Point3D(CurrentRadius, Math.PI/2, 0);
-                // The Highest angle the orbit will reach.
-                var highestAngle = Inclination;
-                // The Offset of the angle it starts at the highest angle at.
-                if ((AscendingNode - Math.PI/2) < 0)
-                {
-                    phaseOffset
-                }
-                var phaseOffset = AscendingNode
-
-                var resultingPolarAngle = highestAngle * Math.Cos(CurrentAngle - phaseOffset);
-
-                // Convert from spherical to cartesian.
-                return new Point3D();
+                var E = Math.Sqrt(1 - Eccentricity * Eccentricity) * Math.Sin(CurrentAngle)
+                    / Eccentricity + Math.Cos(CurrentAngle);
+                return Math.Atan(E);
             }
         }
 
@@ -73,7 +111,7 @@ namespace AstrologyCalculator.Body
         public virtual double OrbitalPeriod { get; set; }
 
         /// <summary>
-        /// The Mean Motion of an orbit in Radians
+        /// The Mean Angular Motion of an orbit in Radians
         /// </summary>
         public double MeanMotion { get { return 2 * Math.PI / OrbitalPeriod; } }
 
@@ -145,6 +183,27 @@ namespace AstrologyCalculator.Body
         }
 
         #endregion DerivedProperties
+
+        #region StateVectorElements
+
+        public Vector3D CurrentPoint
+        {
+            get
+            {
+                var m = CurrentAngle;
+                var r = CurrentRadius;
+                var w = ArgumentOfPeriapsis;
+                var om = AscendingNode;
+                var i = Inclination;
+
+                var p = new Vector3D(r * Math.Cos(m), r * Math.Sin(m), 0);
+
+                var result = Rotate_Z(-om) * Rotate_x(-Inclination) * Rotate_Z(-w);
+                return Vector3D.Multiply(p, result);
+            }
+        }
+
+        #endregion StateVectorElements
 
         #region KeplerianElements
 
