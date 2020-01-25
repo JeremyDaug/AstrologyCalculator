@@ -22,15 +22,11 @@ namespace AstrologyCalculator.BodyEditor
         {
             get
             {
-                return model.BodyName;
+                return "";
             }
             set
             {
-                if (string.Equals(model.BodyName, value))
-                {
-                    model.BodyName = value;
-                    OnPropertyChanged(nameof(BodyName));
-                }
+                
             }
         }
 

@@ -66,7 +66,7 @@ namespace AstrologyCalculator.Body
         {
             get
             {
-                return CalculateEscapeVelocity(BodyRadius);
+                return 0;
             }
         }
 

@@ -14,7 +14,28 @@ namespace AstrologyCalculator.Body
     /// </summary>
     public class Orbital
     {
+        #region BackingProperties
+
+        private double _eccentricity;
+        private double _semiMajorAxis;
+        private double _inclination;
+        private double _ascendingNode;
+        private double _argumentOfPeriapsis;
+        private double _currentAngle;
+        private double _trueAnomaly;
+        private Vector3D _positionVector;
+        private Vector3D _velocityVector;
+        private double _parentMass;
+        private double _bodyMass;
+
+        #endregion BackingProperties
+
         #region HelperFunctions
+
+        public static double DegreeToRadian(double d)
+        {
+            return d * Math.PI / 180;
+        }
 
         /// <summary>
         /// Rotate about x axis
@@ -23,10 +44,10 @@ namespace AstrologyCalculator.Body
         /// <returns>The Rotation Matrix</returns>
         protected Matrix3D Rotate_x(double angle)
         {
-            return new Matrix3D(1, 0,               0,                0,
+            return new Matrix3D(1, 0, 0, 0,
                                 0, Math.Cos(angle), -Math.Sin(angle), 0,
-                                0, Math.Sin(angle), Math.Cos(angle),  0, 
-                                0, 0,               0,                1);
+                                0, Math.Sin(angle), Math.Cos(angle), 0,
+                                0, 0, 0, 1);
         }
 
         /// <summary>
@@ -36,10 +57,10 @@ namespace AstrologyCalculator.Body
         /// <returns>The Rotation Matrix</returns>
         protected Matrix3D Rotate_y(double angle)
         {
-            return new Matrix3D(Math.Cos(angle),  0, Math.Sin(angle), 0,
-                                0,                1, 0,               0,
+            return new Matrix3D(Math.Cos(angle), 0, Math.Sin(angle), 0,
+                                0, 1, 0, 0,
                                 -Math.Sin(angle), 1, Math.Cos(angle), 0,
-                                0,                0, 0,               1);
+                                0, 0, 0, 1);
         }
 
         /// <summary>
@@ -51,8 +72,8 @@ namespace AstrologyCalculator.Body
         {
             return new Matrix3D(Math.Cos(angle), -Math.Sin(angle), 0, 0,
                                 Math.Sin(angle), Math.Cos(angle), 0, 0,
-                                0,               0,               1, 0,
-                                0,               0,               0, 1);
+                                0, 0, 1, 0,
+                                0, 0, 0, 1);
         }
 
         /// <summary>
@@ -234,137 +255,135 @@ namespace AstrologyCalculator.Body
             return G * ParentMass / Math.Pow(r, 2);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="r"></param>
+        /// <returns></returns>
         public double ParentMassBasedOnForceAtRadius(double a, double r)
         {
             return a * r * r / G;
         }
 
-        #endregion DerivedProperties
-
-        #region StateVectorElements
-
-        /// <summary>
-        /// The Current Position Vector
-        /// </summary>
-        public Vector3D CurrentPoint
-        {
-            get
-            {
-                //https://downloads.rene-schwarz.com/download/M001-Keplerian_Orbit_Elements_to_Cartesian_State_Vectors.pdf
-                var m = CurrentAngle;
-                var r = CurrentRadius;
-                var w = ArgumentOfPeriapsis;
-                var om = AscendingNode;
-                var i = Inclination;
-
-                var p = new Vector3D(r * Math.Cos(m), r * Math.Sin(m), 0);
-
-                var result = Rotate_Z(-om) * Rotate_x(-Inclination) * Rotate_Z(-w);
-                return Vector3D.Multiply(p, result);
-            }
-            set
-            {
-                // https://downloads.rene-schwarz.com/download/M002-Cartesian_State_Vectors_to_Keplerian_Orbit_Elements.pdf
-                // From State Vector to Keplerian Elements
-                var orbMomentumVec = Vector3D.CrossProduct(value, CurrentVelocityVector);
-                var eccVec = Vector3D.CrossProduct(CurrentVelocityVector, orbMomentumVec) / GParam
-                    - value / value.Length;
-
-                var transposition = new Vector3D(0, 0, 1);
-                var nToAscNode = Vector3D.CrossProduct(new Vector3D(0, 0, 1), orbMomentumVec);
-
-                if (InnerProduct(value, CurrentVelocityVector) >= 0)
-                    TrueAnomaly = Math.Acos(InnerProduct(eccVec, value) / (eccVec.Length * value.Length));
-                else
-                    TrueAnomaly = 2 * Math.PI - Math.Acos(InnerProduct(eccVec, value) / (eccVec.Length * value.Length));
-
-                Inclination = Math.Acos(orbMomentumVec.Z / orbMomentumVec.Length);
-
-                Eccentricity = eccVec.Length;
-
-                if (nToAscNode.Y >= 0) AscendingNode = Math.Acos(nToAscNode.Y / nToAscNode.Length);
-                else AscendingNode = 2 * Math.PI - Math.Acos(nToAscNode.Y / nToAscNode.Length);
-
-                if (eccVec.Z >= 0) ArgumentOfPeriapsis = Math.Acos(InnerProduct(nToAscNode, eccVec) / (nToAscNode.Length * eccVec.Length));
-                else ArgumentOfPeriapsis = 2 * Math.PI - Math.Acos(InnerProduct(nToAscNode, eccVec) / (nToAscNode.Length * eccVec.Length));
-
-                var EccAn = 2 * Math.Atan(Math.Tan(TrueAnomaly / 2) /
-                    Math.Sqrt((1 + Eccentricity) / (1 - Eccentricity)));
-
-                SemiMajorAxis = 1 / (2 / value.Length - CurrentVelocityVector.LengthSquared / GParam);
-            }
-        }
-
-        /// <summary>
-        /// The Motion State Vector
-        /// </summary>
-        public Vector3D CurrentVelocityVector
-        {
-            get
-            {
-                // https://downloads.rene-schwarz.com/download/M001-Keplerian_Orbit_Elements_to_Cartesian_State_Vectors.pdf
-                var m = CurrentAngle;
-                var r = CurrentRadius;
-                var w = ArgumentOfPeriapsis;
-                var om = AscendingNode;
-                var i = Inclination;
-
-                var p = Math.Sqrt(GParam * SemiMajorAxis) / CurrentRadius *
-                    new Vector3D(-Math.Sin(EccentricAnomaly),
-                                 Math.Sqrt(1 - Eccentricity * Eccentricity) * Math.Cos(EccentricAnomaly),
-                                 0);
-
-                var result = Rotate_Z(-om) * Rotate_x(-Inclination) * Rotate_Z(-w);
-                return Vector3D.Multiply(p, result);
-            }
-            set
-            {
-                // https://downloads.rene-schwarz.com/download/M002-Cartesian_State_Vectors_to_Keplerian_Orbit_Elements.pdf
-                // From State Vector to Keplerian Elements
-                var orbMomentumVec = Vector3D.CrossProduct(CurrentPoint, value);
-                var eccVec = Vector3D.CrossProduct(value, orbMomentumVec) / GParam
-                    - CurrentPoint / CurrentPoint.Length;
-
-                var transposition = new Vector3D(0, 0, 1);
-                var nToAscNode = Vector3D.CrossProduct(new Vector3D(0, 0, 1), orbMomentumVec);
-
-                if (InnerProduct(CurrentPoint, value) >= 0)
-                    TrueAnomaly = Math.Acos(InnerProduct(eccVec, CurrentPoint) / (eccVec.Length * CurrentPoint.Length));
-                else
-                    TrueAnomaly = 2 * Math.PI - Math.Acos(InnerProduct(eccVec, CurrentPoint) / (eccVec.Length * CurrentPoint.Length));
-
-                Inclination = Math.Acos(orbMomentumVec.Z / orbMomentumVec.Length);
-
-                Eccentricity = eccVec.Length;
-
-                if (nToAscNode.Y >= 0) AscendingNode = Math.Acos(nToAscNode.Y / nToAscNode.Length);
-                else AscendingNode = 2 * Math.PI - Math.Acos(nToAscNode.Y / nToAscNode.Length);
-
-                if (eccVec.Z >= 0) ArgumentOfPeriapsis = Math.Acos(InnerProduct(nToAscNode, eccVec) / (nToAscNode.Length * eccVec.Length));
-                else ArgumentOfPeriapsis = 2 * Math.PI - Math.Acos(InnerProduct(nToAscNode, eccVec) / (nToAscNode.Length * eccVec.Length));
-
-                var EccAn = 2 * Math.Atan( Math.Tan(TrueAnomaly/2) /
-                    Math.Sqrt( (1 + Eccentricity) / (1 - Eccentricity) ));
-
-                SemiMajorAxis = 1 / (2/CurrentPoint.Length - value.LengthSquared/GParam);
-            }
-        }
-
         /// <summary>
         /// The Velocity of the body at the current point.
         /// </summary>
-        public double CurrentVelocity
+        public double VVelocity
         {
             get
             {
-                return CurrentVelocityVector.Length;
+                return VelocityVector.Length;
             }
             set
             {
-                var mod = value / CurrentVelocityVector.Length;
-                CurrentVelocityVector = mod * CurrentVelocityVector;
+                var mod = value / VelocityVector.Length;
+                VelocityVector = mod * VelocityVector;
             }
         }
+
+        public double KVelocity
+        {
+            get
+            {
+                return Math.Sqrt(GParam * (2 / CurrentRadius - 1 / SemiMajorAxis));
+            } 
+            set
+            {
+                SemiMajorAxis = GParam * CurrentRadius / (CurrentRadius * value * value - 2 * GParam);
+            }
+        }
+
+        #endregion DerivedProperties
+
+        #region UpdateFunctions
+
+        private void VectorsUpdated()
+        {
+            // https://downloads.rene-schwarz.com/download/M002-Cartesian_State_Vectors_to_Keplerian_Orbit_Elements.pdf
+            // From State Vector to Keplerian Elements
+            var orbMomentumVec = Vector3D.CrossProduct(PositionVector, VelocityVector);
+            var eccVec = Vector3D.CrossProduct(VelocityVector, orbMomentumVec) / GParam
+                - PositionVector / PositionVector.Length;
+
+            var transposition = new Vector3D(0, 0, 1);
+            var nToAscNode = Vector3D.CrossProduct(new Vector3D(0, 0, 1), orbMomentumVec);
+
+            if (InnerProduct(PositionVector, VelocityVector) >= 0)
+                _trueAnomaly = Math.Acos(InnerProduct(eccVec, PositionVector) / (eccVec.Length * PositionVector.Length));
+            else
+                _trueAnomaly = 2 * Math.PI - Math.Acos(InnerProduct(eccVec, PositionVector) / (eccVec.Length * PositionVector.Length));
+
+            _inclination = Math.Acos(orbMomentumVec.Z / orbMomentumVec.Length);
+
+            _eccentricity = eccVec.Length;
+
+            if (nToAscNode.Y >= 0) _ascendingNode = Math.Acos(nToAscNode.Y / nToAscNode.Length);
+            else _ascendingNode = 2 * Math.PI - Math.Acos(nToAscNode.Y / nToAscNode.Length);
+
+            if (eccVec.Z >= 0) _argumentOfPeriapsis = Math.Acos(InnerProduct(nToAscNode, eccVec) / (nToAscNode.Length * eccVec.Length));
+            else _argumentOfPeriapsis = 2 * Math.PI - Math.Acos(InnerProduct(nToAscNode, eccVec) / (nToAscNode.Length * eccVec.Length));
+
+            var EccAn = 2 * Math.Atan(Math.Tan(TrueAnomaly / 2) /
+                Math.Sqrt((1 + Eccentricity) / (1 - Eccentricity)));
+
+            _semiMajorAxis = 1 / (2 / PositionVector.Length - VelocityVector.LengthSquared / GParam);
+        }
+
+        private void ElementsUpdated()
+        {
+            // https://downloads.rene-schwarz.com/download/M001-Keplerian_Orbit_Elements_to_Cartesian_State_Vectors.pdf
+
+            var v = Math.Sqrt(GParam * SemiMajorAxis) / CurrentRadius *
+                new Vector3D(-Math.Sin(EccentricAnomaly),
+                             Math.Sqrt(1 - Eccentricity * Eccentricity) * Math.Cos(EccentricAnomaly),
+                             0);
+
+            var rotation = Rotate_Z(-AscendingNode) * Rotate_x(-Inclination) * Rotate_Z(-ArgumentOfPeriapsis);
+            _velocityVector = Vector3D.Multiply(v, rotation);
+
+            var p = new Vector3D(CurrentRadius * Math.Cos(CurrentAngle), CurrentRadius * Math.Sin(CurrentAngle), 0);
+
+            _positionVector = Vector3D.Multiply(p, rotation);
+        }
+
+        private void GravityUpdated()
+        {
+            VectorsUpdated();
+            ElementsUpdated();
+        }
+
+        #endregion UpdateFunctions
+
+        #region StateVectorElements
+
+        public Vector3D VelocityVector
+        {
+            get { return _velocityVector; }
+            set
+            {
+                if (_velocityVector == value)
+                    return;
+                _velocityVector = value;
+                VectorsUpdated();
+            }
+        }
+
+        public Vector3D PositionVector
+        {
+            get { return _positionVector; }
+            set
+            {
+                if (_positionVector == value)
+                    return;
+                _positionVector = value;
+                VectorsUpdated();
+            }
+        }
+
+        #endregion StateVectorElements
+
+        #region GravitationalProperties
 
         /// <summary>
         /// The Gravitational parameter of the body and it's parent.
@@ -374,26 +393,56 @@ namespace AstrologyCalculator.Body
         /// <summary>
         /// Mass of the parent body being orbited in kg.
         /// </summary>
-        public double ParentMass { get; set; }
+        public double ParentMass
+        {
+            get { return _parentMass; }
+            set
+            {
+                if (_parentMass == value)
+                    return;
+                _parentMass = value;
+                GravityUpdated();
+            }
+        }
 
         /// <summary>
         /// The mass of the body that is orbiting in kg.
         /// </summary>
-        public double BodyMass { get; set; }
+        public double BodyMass
+        {
+            get { return _bodyMass; }
+            set
+            {
+                if (_bodyMass == value)
+                    return;
+                _bodyMass = value;
+                GravityUpdated();
+            }
+        }
 
         /// <summary>
         /// The Gravity Constant in units of m^3 / (kg s^2)
         /// </summary>
         public const double G = 6.67408E-11;
 
-        #endregion StateVectorElements
+        #endregion GravitationalProperties
 
         #region KeplerianElements
 
         /// <summary>
         /// How Elongated the orbit is compated to a circle.
         /// </summary>
-        public double Eccentricity { get; set; }
+        public double Eccentricity
+        {
+            get { return _eccentricity; }
+            set
+            {
+                if (_eccentricity == value)
+                    return;
+                _eccentricity = value;
+                ElementsUpdated();
+            }
+        }
 
         /// <summary>
         /// The Average of Periapsis and Apoapsis in meters.
@@ -402,33 +451,93 @@ namespace AstrologyCalculator.Body
         /// If <see cref="Eccentricity"/> is 0,
         /// then SemiMajor Axis is equivalent to orbital Radius.
         /// </remarks>
-        public double SemiMajorAxis { get; set; }
+        public double SemiMajorAxis
+        {
+            get { return _semiMajorAxis; }
+            set
+            {
+                if (_semiMajorAxis== value)
+                    return;
+                _semiMajorAxis = value;
+                ElementsUpdated();
+            }
+        }
 
         /// <summary>
         /// The angle from the plane of reference the orbit is rotated from in radians.
         /// </summary>
-        public double Inclination { get; set; }
+        public double Inclination
+        {
+            get { return _inclination; }
+            set
+            {
+                if (_inclination == value)
+                    return;
+                _inclination = value;
+                ElementsUpdated();
+            }
+        }
 
         /// <summary>
         /// Where the inclination is rotated around in radians.
         /// (where the orbit contacts the reference plane)
         /// </summary>
-        public double AscendingNode { get; set; }
+        public double AscendingNode
+        {
+            get { return _ascendingNode; }
+            set
+            {
+                if (_ascendingNode == value)
+                    return;
+                _ascendingNode = value;
+                ElementsUpdated();
+            }
+        }
 
         /// <summary>
         /// The angle offset of the pariapsis from the Ascending Node in radians.
         /// </summary>
-        public double ArgumentOfPeriapsis { get; set; }
+        public double ArgumentOfPeriapsis
+        {
+            get { return _argumentOfPeriapsis; }
+            set
+            {
+                if (_argumentOfPeriapsis == value)
+                    return;
+                _argumentOfPeriapsis = value;
+                ElementsUpdated();
+            }
+        }
 
         /// <summary>
-        /// The angle from the periapsis that is where the body is in radians.
+        /// The angle from the periapsis that is where the body is in radians. Position at time t.
         /// </summary>
-        public double CurrentAngle { get; set; }
+        public double CurrentAngle
+        {
+            get { return _currentAngle; }
+            set
+            {
+                if (_currentAngle == value)
+                    return;
+                _currentAngle = value;
+                ElementsUpdated();
+            }
+        }
 
         /// <summary>
-        /// The angle offset that the body starts at in radians.
+        /// The angle offset that the body starts at in radians. Position at t_0.
         /// </summary>
-        public double TrueAnomaly { get; set; }
+        public double TrueAnomaly
+        {
+            get { return _trueAnomaly; }
+            set
+            {
+                if (_trueAnomaly == value)
+                    return;
+                _trueAnomaly = value;
+                ElementsUpdated();
+            }
+        }
 
         #endregion KeplerianElements
     }

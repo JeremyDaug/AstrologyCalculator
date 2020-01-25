@@ -25,12 +25,12 @@ namespace AstrologyCalculator.MainDataframe
         /// <summary>
         /// TODO Rework this once a collection of bodies is needed.
         /// </summary>
-        public Body CurrentBody { get; }
+        //public Body CurrentBody { get; }
 
         private MainDataframe()
         {
             TimeUnitManager = new TimespanUnits.TimespanUnitManager();
-            CurrentBody = new Body();
+            //CurrentBody = new Body();
         }
     }
 }
