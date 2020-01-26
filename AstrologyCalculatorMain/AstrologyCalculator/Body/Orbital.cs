@@ -32,6 +32,11 @@ namespace AstrologyCalculator.Body
 
         #region HelperFunctions
 
+        /// <summary>
+        /// Converts Degrees to Radians
+        /// </summary>
+        /// <param name="d">The Angle to convert</param>
+        /// <returns>The angle in Radians</returns>
         public static double DegreeToRadian(double d)
         {
             return d * Math.PI / 180;
@@ -123,7 +128,7 @@ namespace AstrologyCalculator.Body
         /// <returns>The Velocity of the body along the orbital path in m/s^2</returns>
         public double VelocityAtAnAngle(double radAngle)
         {
-            return Math.Sqrt(GParam * (2 / RadiusAtAnAngle(radAngle) - 1 / SemiMajorAxis)) * OrbitalPeriod / NaturalOrbitalPeriod();
+            return Math.Sqrt(GParam * (2 / RadiusAtAnAngle(radAngle) - 1 / SemiMajorAxis));
         }
 
         /// <summary>
@@ -140,6 +145,33 @@ namespace AstrologyCalculator.Body
         #endregion HelperFunctions
 
         #region DerivedProperties
+
+        /// <summary>
+        /// Additional Accelleration (along the line towards the center mass) needed to sustain the powered velocity.
+        /// </summary>
+        public double AdditionalAcceleration
+        {
+            get => PoweredVelocity * PoweredVelocity / CurrentRadius - AccelerationAtRadius(CurrentRadius);
+        }
+
+        /// <summary>
+        /// The Force of the Powered orbit (if negative, points away from Center mass).
+        /// </summary>
+        public double PoweredForce
+        {
+            get => AdditionalAcceleration * BodyMass;
+        }
+
+        /// <summary>
+        /// The velocity of a powered orbit (if <see cref="OrbitalPeriod"/> and <see cref="NaturalOrbitalPeriod"/> are not equivalent).
+        /// </summary>
+        public double PoweredVelocity
+        {
+            get
+            {
+                return VelocityAtAnAngle(CurrentRadius) * OrbitalPeriod / NaturalOrbitalPeriod();
+            }
+        }
 
         /// <summary>
         /// Where the Barycenter (center of mass) of the system is.
@@ -256,10 +288,10 @@ namespace AstrologyCalculator.Body
         }
 
         /// <summary>
-        /// 
+        /// Calculates the virtual parent mass based on acceleration at a radius.
         /// </summary>
-        /// <param name="a"></param>
-        /// <param name="r"></param>
+        /// <param name="a">the acceleration (in m/s^2)</param>
+        /// <param name="r">The radius we are at (in m)</param>
         /// <returns></returns>
         public double ParentMassBasedOnForceAtRadius(double a, double r)
         {
@@ -267,7 +299,7 @@ namespace AstrologyCalculator.Body
         }
 
         /// <summary>
-        /// The Velocity of the body at the current point.
+        /// The Velocity of the body at the current point in m/s.
         /// </summary>
         public double VVelocity
         {
@@ -282,6 +314,9 @@ namespace AstrologyCalculator.Body
             }
         }
 
+        /// <summary>
+        /// The Velocity based on Keplerian elements in m/s.
+        /// </summary>
         public double KVelocity
         {
             get
@@ -298,6 +333,9 @@ namespace AstrologyCalculator.Body
 
         #region UpdateFunctions
 
+        /// <summary>
+        /// Updates the Keplerian Elements based on the updated State Vectors.
+        /// </summary>
         private void VectorsUpdated()
         {
             // https://downloads.rene-schwarz.com/download/M002-Cartesian_State_Vectors_to_Keplerian_Orbit_Elements.pdf
@@ -330,6 +368,9 @@ namespace AstrologyCalculator.Body
             _semiMajorAxis = 1 / (2 / PositionVector.Length - VelocityVector.LengthSquared / GParam);
         }
 
+        /// <summary>
+        /// Updates the State Vectors when the Keplerian Elements are updated.
+        /// </summary>
         private void ElementsUpdated()
         {
             // https://downloads.rene-schwarz.com/download/M001-Keplerian_Orbit_Elements_to_Cartesian_State_Vectors.pdf
@@ -347,6 +388,9 @@ namespace AstrologyCalculator.Body
             _positionVector = Vector3D.Multiply(p, rotation);
         }
 
+        /// <summary>
+        /// Updates both State Vectors and Keplerian elements when Gravity or Mass is altered.
+        /// </summary>
         private void GravityUpdated()
         {
             VectorsUpdated();
@@ -357,6 +401,9 @@ namespace AstrologyCalculator.Body
 
         #region StateVectorElements
 
+        /// <summary>
+        /// The Velocity State vector of the Body in m/s.
+        /// </summary>
         public Vector3D VelocityVector
         {
             get { return _velocityVector; }
@@ -369,6 +416,9 @@ namespace AstrologyCalculator.Body
             }
         }
 
+        /// <summary>
+        /// The Positional State Vector of the body in m.
+        /// </summary>
         public Vector3D PositionVector
         {
             get { return _positionVector; }
@@ -386,7 +436,7 @@ namespace AstrologyCalculator.Body
         #region GravitationalProperties
 
         /// <summary>
-        /// The Gravitational parameter of the body and it's parent.
+        /// The Gravitational parameter of the body and it's parent in m^3 / s^2.
         /// </summary>
         public double GParam => G * (ParentMass + BodyMass);
 

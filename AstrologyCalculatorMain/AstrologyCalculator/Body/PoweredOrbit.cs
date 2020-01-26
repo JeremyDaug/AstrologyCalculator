@@ -10,7 +10,7 @@ namespace AstrologyCalculator.Body
     /// <summary>
     /// An orbital that is bound by gravity and should be considered 'natural'.
     /// </summary>
-    public class NaturalOrbital : Orbital
+    public class PoweredOrbit : Orbital
     {
         /// <summary>
         /// The orbital period of the body in seconds.

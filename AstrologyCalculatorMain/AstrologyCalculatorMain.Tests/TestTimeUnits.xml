@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TimespanUnitManager>
+  <timeUnits>
+    <unit name="galactic_standard_week" length="15" rank="1"/>
+  </timeUnits>
+</TimespanUnitManager>
