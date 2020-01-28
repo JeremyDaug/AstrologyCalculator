@@ -7,10 +7,14 @@
         xmlns:calendarTab="clr-namespace:AstrologyCalculator.Calendar.CalendarTab"
         xmlns:TimeSpans="clr-namespace:AstrologyCalculator.TimespanUnits.TimespansTab"
         xmlns:bodyeditor="clr-namespace:AstrologyCalculator.BodyEditor"
+        xmlns:systemeditor="clr-namespace:AstrologyCalculator.SystemEditor"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <TabControl>
+            <TabItem Header="System Editor">
+                <systemeditor:SystemEditorView/>
+            </TabItem>
             <TabItem Header="Body Editor">
                 <bodyeditor:BodyEditorView/>
             </TabItem>
