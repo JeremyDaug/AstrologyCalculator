@@ -28,5 +28,31 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        <Label Content="All Bodies" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        <ComboBox ItemsSource="{Binding AllBodies}" IsReadOnly="True" SelectedIndex="0"
+            Height="30" Width="90" VerticalAlignment="Bottom" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="0"/>
+
+        <Button Content="Go To Parent" Command="{Binding GoToParent}"
+                Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" Width="90"/>
+
+        <Label Content="Body Children" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
+        <ComboBox ItemsSource="{Binding BodyChildren}" IsReadOnly="True"
+                  Height="30" Width="90" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+
+        <Label Content="Body Name" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Row="2" Grid.Column="0"/>
+        <TextBlock Text="{Binding CurrentBodyName, UpdateSourceTrigger=PropertyChanged}" Background="White" 
+                   Height="30" Width="90" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+
+        <Label Content="Mass" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        <TextBlock Text="{Binding CurrentBodyMass, UpdateSourceTrigger=PropertyChanged}" Background="White"
+                   Height="30" Width="90" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+
+        <Label Content="in units of" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        <ComboBox ItemsSource="{Binding MassUnitOptions}" IsReadOnly="True"
+                  Height="30" Width="90" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+
+        <Label Content="in units of" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        <TextBox Text="{Binding CurrentSMA, Converter={StaticResource StringToDoubleConverter}}" IsReadOnly="True"
+                  Height="30" Width="90" Grid.Column="0" Grid.Row="4" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
     </Grid>
 </UserControl>

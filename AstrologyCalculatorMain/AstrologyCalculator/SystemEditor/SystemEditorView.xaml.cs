@@ -22,6 +22,7 @@ namespace AstrologyCalculator.SystemEditor
     {
         public SystemEditorView()
         {
+            DataContext = new SystemEditorViewModel();
             InitializeComponent();
         }
     }
